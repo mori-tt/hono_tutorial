@@ -1,18 +1,21 @@
 import { z } from "zod";
+import { z } from "@hono/zod-openapi";
 
-export const TodoSchema = z.object({
-  id: z.number().brand("TodoId"),
-  title: z
-    .string({
-      // パース時にタイトルの有無をチェック
-      required_error: "Title is required",
-    })
-    .trim()
-    // パース時にタイトルが一文字以上あるかどうかチェック
-    .min(1, { message: "Title must be at least 1 character long" }),
-  done: z.coerce.boolean().default(false),
-  doneAt: z.date().optional(),
-});
+export const TodoSchema = z
+  .object({
+    id: z.number().brand("TodoId"),
+    title: z
+      .string({
+        // パース時にタイトルの有無をチェック
+        required_error: "Title is required",
+      })
+      .trim()
+      // パース時にタイトルが一文字以上あるかどうかチェック
+      .min(1, { message: "Title must be at least 1 character long" }),
+    done: z.coerce.boolean().default(false),
+    doneAt: z.date().optional(),
+  })
+  .openapi("Todo");
 
 export type Todo = z.infer<typeof TodoSchema>;
 export type TodoId = Todo["id"];
