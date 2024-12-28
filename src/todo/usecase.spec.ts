@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { readTodos, createTodo, completeTodo } from "./usecase";
+import { readTodos, createTodo, completeTodo, toggleTodo } from "./usecase";
 import type { TodoRepository, TodoId } from "./domain";
 
 describe.concurrent("todo usecases", () => {
@@ -20,6 +20,7 @@ describe.concurrent("todo usecases", () => {
       })
       .mockResolvedValueOnce(null),
     setCompleted: vi.fn(),
+    setUncompleted: vi.fn(),
   };
 
   it("reads todos", async () => {
@@ -52,5 +53,12 @@ describe.concurrent("todo usecases", () => {
     expect(() => completeTodo(repository, id)).rejects.toThrowError(
       "Todo not found"
     );
+  });
+
+  it("toggles a todo completion status", async () => {
+    const id = 1 as TodoId;
+    await toggleTodo(repository, id);
+    expect(repository.selectById).toHaveBeenCalledWith(id);
+    expect(repository.setCompleted).toHaveBeenCalledWith(id);
   });
 });

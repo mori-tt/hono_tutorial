@@ -2,7 +2,7 @@ import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { HTTPException } from "hono/http-exception";
 
 import { parseTodoId, TodoSchema } from "./domain";
-import { readTodos, createTodo, completeTodo } from "./usecase";
+import { readTodos, createTodo } from "./usecase";
 import { todoRepository } from "./infra/repo";
 
 export const todoRoute = new OpenAPIHono();
@@ -85,19 +85,28 @@ todoRoute.openapi(postTodoRoute, async (c) => {
 });
 
 const patchTodoRoute = createRoute({
-  operationId: "completeTodo",
+  operationId: "toggleTodo",
   tags: ["todos"],
-  path: "/todos/{id}/complete",
+  path: "/todos/{id}",
   method: "patch",
-  description: "Mark a todo item as complete",
+  description: "Toggle todo completion status",
   request: {
     params: z.object({
       id: z.string(),
     }),
+    body: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            done: z.boolean(),
+          }),
+        },
+      },
+    },
   },
   responses: {
     200: {
-      description: "a completed todo todo item",
+      description: "Updated todo item",
       content: {
         "application/json": {
           schema: TodoSchema,
@@ -112,9 +121,13 @@ const patchTodoRoute = createRoute({
 
 todoRoute.openapi(patchTodoRoute, async (c) => {
   const id = c.req.param("id");
+  const body = await c.req.json();
+  const { done } = body;
   try {
     const todoId = parseTodoId(Number(id));
-    const todo = await completeTodo(todoRepository, todoId);
+    const todo = done
+      ? await todoRepository.setCompleted(todoId)
+      : await todoRepository.setUncompleted(todoId);
     return c.json(todo);
   } catch (e: unknown) {
     throw new HTTPException(400, { message: (e as Error).message });

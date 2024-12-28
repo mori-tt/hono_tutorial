@@ -42,4 +42,13 @@ export const todoRepository: TodoRepository = {
       .executeTakeFirst();
     return data ? parseTodo(toCamel(data)) : null;
   },
+  setUncompleted: async (id: number) => {
+    const data = await db
+      .updateTable("todo")
+      .set({ done: 0, done_at: null })
+      .where("todo.id", "=", id)
+      .returningAll()
+      .executeTakeFirst();
+    return data ? parseTodo(toCamel(data)) : null;
+  },
 };

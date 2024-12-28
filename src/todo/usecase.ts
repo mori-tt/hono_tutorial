@@ -16,16 +16,13 @@ export const createTodo = async ({ insert }: TodoRepository, title: string) => {
   return await insert(todo);
 };
 
-export const completeTodo = async (
-  { selectById, setCompleted }: TodoRepository,
+export const toggleTodo = async (
+  { selectById, setCompleted, setUncompleted }: TodoRepository,
   id: TodoId
 ) => {
   const todo = await selectById(id);
   if (!todo) {
     throw new Error("Todo not found");
   }
-  if (isComplete(todo)) {
-    return todo;
-  }
-  return await setCompleted(id);
+  return isComplete(todo) ? await setUncompleted(id) : await setCompleted(id);
 };

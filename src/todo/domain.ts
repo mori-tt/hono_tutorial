@@ -34,4 +34,5 @@ export type TodoRepository = {
   selectById: (id: TodoId) => Promise<Todo | null>;
   insert: (todo: NewTodo) => Promise<Todo | null>;
   setCompleted: (id: TodoId) => Promise<Todo | null>;
+  setUncompleted: (id: TodoId) => Promise<Todo | null>;
 };

@@ -10,7 +10,14 @@ import { todoRoute } from "./todo/route";
 const app = new OpenAPIHono();
 
 app.use(logger());
-app.use("/v1/*", cors());
+app.use(
+  "/v1/*",
+  cors({
+    origin: ["http://localhost:5173"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowHeaders: ["Content-Type"],
+  })
+);
 
 app.route("/v1", todoRoute);
 app.onError((e, c) => {
