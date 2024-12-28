@@ -1,0 +1,63 @@
+version: "1.0"
+name: hono_tutorial
+config:
+  http:
+    baseURL: http://localhost:3000
+tests:
+  todos:
+    name: Operations about todos
+    steps:
+      - id: getTodos
+        http:
+          url: /v1/todos
+          method: GET
+          params:
+            page: 1
+            limit: 10
+          check:
+            status: 200
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Todo"
+      - id: createTodo
+        http:
+          url: /v1/todos
+          method: POST
+          headers:
+            Content-Type: application/json
+            accept: application/json
+          json:
+            title: sint cupidatat elit ullamco
+          check:
+            status: 200
+            schema:
+              $ref: "#/components/schemas/Todo"
+      - id: completeTodo
+        http:
+          url: /v1/todos/1/complete
+          method: PATCH
+          check:
+            status: 200
+            schema:
+              $ref: "#/components/schemas/Todo"
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+          minLength: 1
+        done:
+          type:
+            - boolean
+            - "null"
+          default: false
+        doneAt:
+          type: ["string", "null"]
+      required:
+        - id
+        - title

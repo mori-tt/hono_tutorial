@@ -32,9 +32,9 @@ const getTodosRoute = createRoute({
 });
 
 todoRoute.openapi(getTodosRoute, async (c) => {
-  const { page, limit } = c.req.valid("query");
+  //   const { page, limit } = c.req.valid("query");
 
-  const todos = await readTodos(todoRepository, page, limit);
+  const todos = await readTodos(todoRepository);
   return c.json(todos);
 });
 

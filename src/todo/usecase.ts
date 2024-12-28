@@ -1,7 +1,14 @@
 import { parseNewTodo, isComplete, TodoRepository, TodoId } from "./domain";
 
-export const readTodos = async ({ selectAll }: TodoRepository) => {
-  return await selectAll();
+export const readTodos = async (
+  { selectAll }: TodoRepository,
+  page = 1,
+  limit = 10
+) => {
+  if (page < 1) {
+    throw Error("page should be a positive number");
+  }
+  return await selectAll(page - 1, limit);
 };
 
 export const createTodo = async ({ insert }: TodoRepository, title: string) => {
