@@ -1,18 +1,31 @@
-# dev
+# dependencies
+node_modules/
+/node_modules/
 .yarn/
 !.yarn/releases
+
+# testing
+coverage/
+__snapshots__/
+
+# production
+dist/
+build/
+
+# development
 .vscode/*
 !.vscode/launch.json
 !.vscode/*.code-snippets
+.idea/
 .idea/workspace.xml
 .idea/usage.statistics.xml
 .idea/shelf
 
-# deps
-node_modules/
-
-# env
+# environment variables
 .env
+.env.local
+.env.development
+.env.test
 .env.production
 
 # logs
@@ -26,3 +39,10 @@ lerna-debug.log*
 
 # misc
 .DS_Store
+*.pem
+.cache
+.temp
+*.local
+
+# typescript
+*.tsbuildinfo
